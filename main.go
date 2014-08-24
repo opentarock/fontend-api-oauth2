@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/arjantop/oauth2-util"
+	"github.com/opentarock/frontend-api-oauth2/middleware"
 	"github.com/opentarock/service-api/go/client"
 	"github.com/opentarock/service-api/go/proto_oauth2"
 )
@@ -23,7 +24,9 @@ func main() {
 		log.Fatalf("Error creating oauth2 client: %s", err)
 	}
 
-	r.POST("/token", func(c *gin.Context) {
+	noCache := r.Group("/", middleware.NoCache())
+
+	noCache.POST("/token", func(c *gin.Context) {
 		paramGrantType := c.Request.PostFormValue(oauth2.ParameterGrantType)
 		paramUsername := c.Request.PostFormValue(oauth2.ParameterUsername)
 		paramPassword := c.Request.PostFormValue(oauth2.ParameterPassword)
